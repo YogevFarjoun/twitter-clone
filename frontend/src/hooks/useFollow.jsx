@@ -1,20 +1,21 @@
-import { toast } from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const useFollow = () => {
   const queryClient = useQueryClient();
 
   const { mutate: follow, isPending } = useMutation({
-    onMutate: async (userId) => {
+    mutationFn: async (userId) => {
       try {
-        const res = await fetch(`/api/users//follow/${userId}`, {
+        const res = await fetch(`/api/users/follow/${userId}`, {
           method: "POST",
         });
+
         const data = await res.json();
         if (!res.ok) {
-          throw new Error(data.message || "Something went wrong!");
+          throw new Error(data.error || "Something went wrong!");
         }
-        return data;
+        return;
       } catch (error) {
         throw new Error(error.message);
       }
@@ -29,6 +30,7 @@ const useFollow = () => {
       toast.error(error.message);
     },
   });
+
   return { follow, isPending };
 };
 
